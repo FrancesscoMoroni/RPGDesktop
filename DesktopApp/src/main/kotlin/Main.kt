@@ -1,3 +1,4 @@
+import Application.ApplicationState
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,30 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import kotlinx.coroutines.launch
 
+var applicationState : ApplicationState =  ApplicationState()
+
 @Composable
 @Preview
-fun App(Win window) {
-    Button(onClick = {window}) {Text("FullScreen")}
+fun App() {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    Button(onClick = { applicationState.changeWindowMode() }) {Text("FullScreen")}
 
     /*val colors = listOf(
         Color(0xFFffd7d7.toInt()),
@@ -77,17 +61,14 @@ fun App(Win window) {
     }*/
 }
 
-fun test() {
-
-}
-
 fun main() = application {
 
-    Window(onCloseRequest = ::exitApplication,
-        title = "RPGDesktop",
-        state = rememberWindowState(placement = WindowPlacement.Maximized),
-        undecorated = true
+    val window = Window(onCloseRequest = ::exitApplication,
+        title = applicationState.windowState.title,
+        state = WindowState(applicationState.windowState.placement),
+        undecorated = applicationState.windowState.undecorated
     ) {
-        App(window)
+        applicationState.window = window
+        App()
     }
 }
