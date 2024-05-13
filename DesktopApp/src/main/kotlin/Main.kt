@@ -1,16 +1,14 @@
 import Application.ApplicationState
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -22,20 +20,7 @@ var applicationState : ApplicationState =  ApplicationState()
 @Composable
 @Preview
 fun App() {
-
-    Button(onClick = { applicationState.changeWindowMode() }) {Text("FullScreen")}
-
-    /*val colors = listOf(
-        Color(0xFFffd7d7.toInt()),
-        Color(0xFFffe9d6.toInt()),
-        Color(0xFFfffbd0.toInt()),
-        Color(0xFFe3ffd9.toInt()),
-        Color(0xFFd0fff8.toInt())
-    )
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-
-    var text by remember { mutableStateOf("Hello, World!") }
+    val checkedState = remember { mutableStateOf(true) }
 
     MaterialTheme {
 
@@ -45,20 +30,52 @@ fun App() {
 
         Scaffold(topBar = {
             TopAppBar(title = { Text("Testowa aplikacja") })
-        }, content = {
-            NavigationRail {
-                items.forEachIndexed { index, item ->
-                    NavigationRailItem(
-                        icon = { Icon(icons[index], contentDescription = item) },
-                        label = { Text(item) },
-                        selected = selectedItem == index,
-                        onClick = { selectedItem = index }
-                    )
+        }) {
+            Row() {
+                Column(
+                ) {
+                    NavigationRail {
+                        items.forEachIndexed { index, item ->
+                            NavigationRailItem(
+                                icon = { Icon(icons[index], contentDescription = item) },
+                                label = { Text(item) },
+                                selected = selectedItem == index,
+                                onClick = { selectedItem = index }
+                            )
+                        }
+                    }
+                }
+                Column(
+                    Modifier.padding(10.dp)
+                ) {
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End,
+                    ) {
+                        Checkbox(
+                            checked = checkedState.value,
+                            onCheckedChange = {
+                                checkedState.value = it
+                                applicationState.changeWindowMode()
+                            }
+                        )
+                        Text ("FullScreen")
+                    }
+
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End,
+                    ) {
+                        Button(
+                            onClick = {applicationState.exitApplication()},
+                        ) {
+                            Text("Exit Application")
+                        }
+                    }
                 }
             }
-        })
-
-    }*/
+            }
+    }
 }
 
 fun main() = application {

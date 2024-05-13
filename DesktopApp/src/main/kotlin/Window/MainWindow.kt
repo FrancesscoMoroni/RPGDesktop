@@ -6,15 +6,13 @@ import androidx.compose.ui.window.WindowState
 class MainWindow(
     val title : String = "",
 ) {
-    var undecorated : Boolean = true
-    var placement = WindowPlacement.Maximized
+    var undecorated : Boolean = false
+    var placement = WindowPlacement.Fullscreen
     var maximized : Boolean = true
 
     fun changePlacement(newPlacement: WindowPlacement) {
         placement = newPlacement
-    }
 
-    fun changeUndecorated() {
-        undecorated = !undecorated
+        maximized = !maximized
     }
 }
