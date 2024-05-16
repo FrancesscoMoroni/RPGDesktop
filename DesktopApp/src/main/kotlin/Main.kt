@@ -1,6 +1,5 @@
 import Application.ApplicationState
-import View.Navigation
-import View.Settings
+import View.*
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -15,16 +14,23 @@ var applicationState : ApplicationState =  ApplicationState()
 @Composable
 @Preview
 fun App() {
+    val selectedNavigationItem = remember { mutableIntStateOf(0) }
+
     MaterialTheme {
         Scaffold(topBar = {
-            TopAppBar(title = { Text("Testowa aplikacja") })
+            TopAppBar(title = { Text("RPGDesktop") })
         }) {
             Row() {
                 Column(
                 ) {
-                    Navigation()
+                    Navigation(applicationState, selectedNavigationItem)
                 }
-                Settings(applicationState)
+                when(selectedNavigationItem.value) {
+                    0 -> DiceRollerView(applicationState)
+                    1 -> MapView()
+                    2 -> EquipmentView()
+                    3 -> SettingsView(applicationState)
+                }
             }
         }
     }

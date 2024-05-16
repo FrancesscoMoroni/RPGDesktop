@@ -16,13 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Settings(applicationState : ApplicationState) {
-    val checkedState = remember { mutableStateOf(true) }
+    fun SettingsView(applicationState: ApplicationState) {
+        val checkedState = remember { mutableStateOf(applicationState.ifMaximized()) }
 
     Column(
         Modifier.padding(10.dp)
     ) {
-        Row (
+        Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
         ) {
@@ -33,18 +33,7 @@ fun Settings(applicationState : ApplicationState) {
                     applicationState.changeWindowMode()
                 }
             )
-            Text ("FullScreen")
-        }
-
-        Row (
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End,
-        ) {
-            Button(
-                onClick = {applicationState.exitApplication()},
-            ) {
-                Text("Exit Application")
-            }
+            Text("FullScreen")
         }
     }
 

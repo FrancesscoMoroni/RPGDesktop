@@ -7,7 +7,8 @@ import kotlin.system.exitProcess
 
 class ApplicationState {
     val windowState = MainWindow("RPGDesktop")
-    var window : ComposeWindow = ComposeWindow()
+    var window: ComposeWindow = ComposeWindow()
+    var diceSetting: DiceSetting = DiceSetting()
 
     fun changeWindowMode() {
         if (windowState.maximized) {
@@ -22,5 +23,23 @@ class ApplicationState {
     fun exitApplication() {
         exitProcess(0)
     }
+
+    fun ifMaximized(): Boolean {
+        return windowState.maximized
+    }
+
+    fun changeDiceSetting(type: Int, amount: Int) {
+        diceSetting.diceType = type
+        diceSetting.diceAmount = amount
+    }
+
+    fun getDiceType() : Int {
+        return diceSetting.diceType
+    }
+
+    fun setDiceType(type: Int) {
+        diceSetting.diceType = type
+    }
+
 
 }
