@@ -15,6 +15,7 @@ private var animationRotation : Float = 0f
 @Composable
 fun DiceAnimationRotate(
     diceType: String,
+    diceValue: Int
 ) {
     var currentRotation by remember { mutableStateOf(0f) }
     val rotation = remember { Animatable(currentRotation) }
@@ -36,7 +37,7 @@ fun DiceAnimationRotate(
     }
 
     Image(
-        painter = painterResource("DiceImage/${diceType}/${diceType}_1.svg"),
+        painter = painterResource("DiceImage/${diceType}/${diceType}_${diceValue}.svg"),
         contentDescription = "TEST",
         modifier = Modifier.width(100.dp).height(100.dp).rotate(currentRotation)
     )
@@ -45,6 +46,7 @@ fun DiceAnimationRotate(
 @Composable
 fun DiceAnimationStop(
     diceType: String,
+    diceValue: Int
 ) {
     var currentRotation by remember { mutableStateOf(animationRotation) }
     val rotation = remember { Animatable(currentRotation) }
@@ -67,7 +69,7 @@ fun DiceAnimationStop(
     }
 
     Image(
-        painter = painterResource("DiceImage/${diceType}/${diceType}_1.svg"),
+        painter = painterResource("DiceImage/${diceType}/${diceType}_${diceValue}.svg"),
         contentDescription = "TEST",
         modifier = Modifier.width(100.dp).height(100.dp).rotate(currentRotation)
     )

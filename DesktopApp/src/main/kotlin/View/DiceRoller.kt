@@ -4,6 +4,7 @@ import Animation.DiceAnimationRotate
 import Animation.DiceAnimationStop
 import Application.ApplicationState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ButtonDefaults
@@ -21,13 +22,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.random.Random
 
 @Composable
 fun DiceRollerView(applicationState: ApplicationState) {
     val items = listOf("d4", "d6", "d8", "d10", "d12", "d20")
+    val dices = listOf(4, 6, 8, 10, 12, 20)
+    var result by remember { mutableStateOf(0) }
+    var diceValues by remember {  mutableStateOf(listOf(1,1,1,1,1,1,1,1,1,1)) }
     var selectedIndex by remember { mutableStateOf(applicationState.getDiceType()) }
     var numberOfDices by remember { mutableStateOf(1) }
     var animationState by remember {  mutableStateOf(false) }
+    var rolled by remember {  mutableStateOf(true) }
+    var calculateResult by remember {  mutableStateOf(true) }
 
     Row(
         Modifier.fillMaxWidth(),
@@ -36,17 +43,17 @@ fun DiceRollerView(applicationState: ApplicationState) {
         if (numberOfDices <= 5) {
             for (i in 1..numberOfDices) {
                 if (animationState) {
-                    DiceAnimationRotate(items[selectedIndex])
+                    DiceAnimationRotate(items[selectedIndex], diceValues[i - 1])
                 } else {
-                    DiceAnimationStop(items[selectedIndex])
+                    DiceAnimationStop(items[selectedIndex], diceValues[i - 1])
                 }
             }
         } else {
             for (i in 1..5) {
                 if (animationState) {
-                    DiceAnimationRotate(items[selectedIndex])
+                    DiceAnimationRotate(items[selectedIndex], diceValues[i - 1])
                 } else {
-                    DiceAnimationStop(items[selectedIndex])
+                    DiceAnimationStop(items[selectedIndex], diceValues[i - 1])
                 }
             }
         }
@@ -58,9 +65,9 @@ fun DiceRollerView(applicationState: ApplicationState) {
         ) {
             for (i in 6..numberOfDices) {
                 if (animationState) {
-                    DiceAnimationRotate(items[selectedIndex])
+                    DiceAnimationRotate(items[selectedIndex], diceValues[i - 1])
                 } else {
-                    DiceAnimationStop(items[selectedIndex])
+                    DiceAnimationStop(items[selectedIndex], diceValues[i - 1])
                 }
             }
         }
@@ -77,8 +84,10 @@ fun DiceRollerView(applicationState: ApplicationState) {
                 elevation = if (selectedIndex == index) null
                     else ButtonDefaults.elevation(10.dp),
                 onClick = {
-                    selectedIndex = index
-                    applicationState.setDiceType(index)
+                    if (!animationState) {
+                        selectedIndex = index
+                        applicationState.setDiceType(index)
+                    }
                 }
             ) {
                 Image(
@@ -100,10 +109,25 @@ fun DiceRollerView(applicationState: ApplicationState) {
         ),
     ) {
         Column {
+            Text(
+                result.toString(),
+                fontSize = 30.sp
+            )
+        }
+    }
+
+    Row(
+        Modifier.fillMaxWidth().padding(5.dp),
+        horizontalArrangement = Arrangement.spacedBy(
+            space = 12.dp,
+            alignment = Alignment.CenterHorizontally
+        ),
+    ) {
+        Column {
             Button(
                 colors = ButtonDefaults.buttonColors(),
                 onClick = {
-                    if (numberOfDices != 1) {
+                    if (numberOfDices != 1 && !animationState) {
                         numberOfDices--
                     }
                 }
@@ -122,7 +146,7 @@ fun DiceRollerView(applicationState: ApplicationState) {
         Column {
             Button(
                 onClick = {
-                    if (numberOfDices != 10) {
+                    if (numberOfDices != 10 && !animationState) {
                         numberOfDices++
                     }
                 }
@@ -139,8 +163,34 @@ fun DiceRollerView(applicationState: ApplicationState) {
             alignment = Alignment.CenterHorizontally
         )
     ) {
-        Button( onClick = {
+        Button(
+            colors = if (!animationState) ButtonDefaults.buttonColors()
+                else ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.inversePrimary),
+            onClick = {
             animationState = !animationState
-        }) { Text(text = "Roll") }
+        }) {
+            if (animationState) {
+                if (!rolled) {
+                    result = 0
+                    var randomValues = listOf<Int>()
+                    diceValues.forEach {
+                        randomValues = randomValues.plus(Random.nextInt(1, dices[selectedIndex] + 1))
+                    }
+                    diceValues = randomValues
+                    rolled = true
+                }
+                calculateResult = true
+                Text(text = "Stop")
+            } else {
+                rolled = false
+                if (calculateResult) {
+                    for (i in 1..numberOfDices) {
+                        result += diceValues[i - 1]
+                    }
+                }
+                calculateResult = false
+                Text(text = "Roll")
+            }
+        }
     }
 }
