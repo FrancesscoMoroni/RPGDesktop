@@ -25,11 +25,13 @@ fun App() {
                 ) {
                     Navigation(applicationState, selectedNavigationItem)
                 }
-                when(selectedNavigationItem.value) {
-                    0 -> DiceRollerView(applicationState)
-                    1 -> MapView()
-                    2 -> EquipmentView()
-                    3 -> SettingsView(applicationState)
+                Column() {
+                    when(selectedNavigationItem.value) {
+                        0 -> DiceRollerView(applicationState)
+                        1 -> MapView()
+                        2 -> EquipmentView()
+                        3 -> SettingsView(applicationState)
+                    }
                 }
             }
         }
