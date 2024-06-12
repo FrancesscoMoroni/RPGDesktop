@@ -4,7 +4,6 @@ import Animation.DiceAnimationRotate
 import Animation.DiceAnimationStop
 import Application.ApplicationState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ButtonDefaults
@@ -28,19 +27,23 @@ import kotlin.random.Random
 fun DiceRollerView(applicationState: ApplicationState) {
     val items = listOf("d4", "d6", "d8", "d10", "d12", "d20")
     val dices = listOf(4, 6, 8, 10, 12, 20)
+    val defaultDiceColumnSize = 150.dp
+    val defaultDiceTypeColumnSize = 50.dp
+
     var result by remember { mutableStateOf(0) }
-    var diceValues by remember {  mutableStateOf(listOf(1,1,1,1,1,1,1,1,1,1)) }
+    var diceValues by remember { mutableStateOf(listOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1)) }
     var selectedIndex by remember { mutableStateOf(applicationState.getDiceType()) }
     var numberOfDices by remember { mutableStateOf(1) }
-    var animationState by remember {  mutableStateOf(false) }
-    var rolled by remember {  mutableStateOf(true) }
-    var calculateResult by remember {  mutableStateOf(true) }
+    var animationState by remember { mutableStateOf(false) }
+    var rolled by remember { mutableStateOf(true) }
+    var calculateResult by remember { mutableStateOf(true) }
 
-    Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-    ) {
-        if (numberOfDices <= 5) {
+    if (numberOfDices <= 5) {
+        Row(
+            Modifier.fillMaxWidth().defaultMinSize(minHeight = defaultDiceColumnSize * 2),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             for (i in 1..numberOfDices) {
                 if (animationState) {
                     DiceAnimationRotate(items[selectedIndex], diceValues[i - 1])
@@ -48,7 +51,13 @@ fun DiceRollerView(applicationState: ApplicationState) {
                     DiceAnimationStop(items[selectedIndex], diceValues[i - 1])
                 }
             }
-        } else {
+        }
+    } else {
+        Row(
+            Modifier.fillMaxWidth().defaultMinSize(minHeight = defaultDiceColumnSize),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             for (i in 1..5) {
                 if (animationState) {
                     DiceAnimationRotate(items[selectedIndex], diceValues[i - 1])
@@ -57,11 +66,11 @@ fun DiceRollerView(applicationState: ApplicationState) {
                 }
             }
         }
-    }
-    if(numberOfDices > 5) {
+
         Row(
-            Modifier.fillMaxWidth(),
+            Modifier.fillMaxWidth().defaultMinSize(minHeight = defaultDiceColumnSize),
             horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             for (i in 6..numberOfDices) {
                 if (animationState) {
@@ -72,17 +81,18 @@ fun DiceRollerView(applicationState: ApplicationState) {
             }
         }
     }
+
     Row(
-        Modifier.fillMaxWidth(),
+        Modifier.fillMaxWidth().defaultMinSize(minHeight = defaultDiceTypeColumnSize),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         items.forEachIndexed { index, s ->
             OutlinedButton(
                 colors = if (selectedIndex == index) ButtonDefaults.buttonColors()
-                    else ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.background),
+                else ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.background),
                 shape = CircleShape,
                 elevation = if (selectedIndex == index) null
-                    else ButtonDefaults.elevation(10.dp),
+                else ButtonDefaults.elevation(10.dp),
                 onClick = {
                     if (!animationState) {
                         selectedIndex = index
@@ -165,10 +175,10 @@ fun DiceRollerView(applicationState: ApplicationState) {
     ) {
         Button(
             colors = if (!animationState) ButtonDefaults.buttonColors()
-                else ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.inversePrimary),
+            else ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.inversePrimary),
             onClick = {
-            animationState = !animationState
-        }) {
+                animationState = !animationState
+            }) {
             if (animationState) {
                 if (!rolled) {
                     result = 0
