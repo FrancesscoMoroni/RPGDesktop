@@ -34,9 +34,9 @@ fun DiceRollerView(applicationState: ApplicationState) {
     var diceValues by remember { mutableStateOf(listOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1)) }
     var selectedIndex by remember { mutableStateOf(applicationState.getDiceType()) }
     var numberOfDices by remember { mutableStateOf(1) }
-    var animationState by remember { mutableStateOf(false) }
-    var rolled by remember { mutableStateOf(true) }
-    var calculateResult by remember { mutableStateOf(true) }
+    var animationState by remember {  mutableStateOf(false) }
+    var rolled by remember {  mutableStateOf(true) }
+    var calculateResult by remember {  mutableStateOf(false) }
 
     if (numberOfDices <= 5) {
         Row(
@@ -95,6 +95,8 @@ fun DiceRollerView(applicationState: ApplicationState) {
                 else ButtonDefaults.elevation(10.dp),
                 onClick = {
                     if (!animationState) {
+                        diceValues = listOf(1,1,1,1,1,1,1,1,1,1)
+                        result = 0
                         selectedIndex = index
                         applicationState.setDiceType(index)
                     }
@@ -119,10 +121,12 @@ fun DiceRollerView(applicationState: ApplicationState) {
         ),
     ) {
         Column {
-            Text(
-                result.toString(),
-                fontSize = 30.sp
-            )
+            if(result != 0) {
+                Text(
+                    "Wynik: $result",
+                    fontSize = 30.sp
+                )
+            }
         }
     }
 
@@ -138,6 +142,7 @@ fun DiceRollerView(applicationState: ApplicationState) {
                 colors = ButtonDefaults.buttonColors(),
                 onClick = {
                     if (numberOfDices != 1 && !animationState) {
+                        result = 0
                         numberOfDices--
                     }
                 }
@@ -145,7 +150,6 @@ fun DiceRollerView(applicationState: ApplicationState) {
                 Icon(Icons.Filled.Remove, contentDescription = null)
             }
         }
-
         Column {
             Text(
                 numberOfDices.toString(),
@@ -157,6 +161,7 @@ fun DiceRollerView(applicationState: ApplicationState) {
             Button(
                 onClick = {
                     if (numberOfDices != 10 && !animationState) {
+                        result = 0
                         numberOfDices++
                     }
                 }
